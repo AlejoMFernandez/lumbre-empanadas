@@ -1,0 +1,531 @@
+{
+  "$schema": "./kit/cliente.schema.json",
+  "id": "lumbre-empanadas",
+  "nombre": "Lumbre",
+  "pais": "AR",
+  "idioma": "es",
+  "modo": "demo",
+  "whatsapp": "5491161142717",
+  "instagram": "lumbreempanadas",
+  "prefijoPedido": "LU",
+  "supabase": {
+    "url": "",
+    "anonKey": ""
+  },
+  "marca": {
+    "logo": "img/logo-lumbre.svg",
+    "logoPanel": "img/logo-lumbre-oscuro.svg",
+    "logoClaro": "img/logo-lumbre.svg",
+    "isotipo": "img/llama.svg",
+    "favicon": "img/favicon.svg",
+    "colores": {
+      "fondo": "#0E0403",
+      "superficie": "#1A0805",
+      "texto": "#F2D7A0",
+      "suave": "#C9B190",
+      "primario": "#DFA05F",
+      "sobrePrimario": "#0E0403",
+      "acento": "#FFB35C",
+      "sobreAcento": "#0E0403",
+      "borde": "#45150D",
+      "alerta": "#FFB35C",
+      "error": "#E2694A"
+    },
+    "fuentes": {
+      "titulos": "'Cinzel', Georgia, serif",
+      "texto": "'Manrope', system-ui, sans-serif",
+      "googleFonts": ""
+    },
+    "estilo": {
+      "forma": "redondeada",
+      "sombra": "suave",
+      "borde": "1.5px",
+      "mayusculas": false
+    }
+  },
+  "modulos": {
+    "carta": true,
+    "carrito": true,
+    "reservas": true,
+    "admin": true,
+    "cartaQR": true
+  },
+  "horarios": {
+    "lun": [],
+    "mar": [
+      [
+        "19:30",
+        "22:30"
+      ]
+    ],
+    "mie": [
+      [
+        "19:30",
+        "22:30"
+      ]
+    ],
+    "jue": [
+      [
+        "19:30",
+        "22:30"
+      ]
+    ],
+    "vie": [
+      [
+        "19:30",
+        "22:30"
+      ]
+    ],
+    "sab": [
+      [
+        "19:30",
+        "22:30"
+      ]
+    ],
+    "dom": [
+      [
+        "19:30",
+        "22:30"
+      ]
+    ]
+  },
+  "pedidos": {
+    "salidas": [
+      "mercadopago",
+      "whatsapp"
+    ],
+    "tipos": [
+      "delivery",
+      "retiro"
+    ],
+    "envio": 0,
+    "minimo": 0,
+    "encargo": {
+      "anticipacionHoras": 0,
+      "diasAdelante": 2,
+      "cupoFranja": 6,
+      "franjas": [
+        {
+          "id": "f2030",
+          "nombre": "20:30 a 21:00",
+          "desde": "20:30",
+          "hasta": "21:00"
+        },
+        {
+          "id": "f2100",
+          "nombre": "21:00 a 21:30",
+          "desde": "21:00",
+          "hasta": "21:30"
+        },
+        {
+          "id": "f2130",
+          "nombre": "21:30 a 22:00",
+          "desde": "21:30",
+          "hasta": "22:00"
+        },
+        {
+          "id": "f2200",
+          "nombre": "22:00 a 22:30",
+          "desde": "22:00",
+          "hasta": "22:30"
+        }
+      ]
+    }
+  },
+  "reservas": {
+    "capacidad": 400,
+    "maxPersonas": 300,
+    "anticipacionMin": 4320,
+    "diasAdelante": 120,
+    "servicios": [
+      {
+        "id": "mediodia",
+        "nombre": "Mediodía",
+        "dias": [
+          "lun",
+          "mar",
+          "mie",
+          "jue",
+          "vie",
+          "sab",
+          "dom"
+        ],
+        "tandas": [
+          {
+            "nombre": "",
+            "turnos": [
+              "12:00",
+              "13:00"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "noche",
+        "nombre": "Noche",
+        "dias": [
+          "lun",
+          "mar",
+          "mie",
+          "jue",
+          "vie",
+          "sab",
+          "dom"
+        ],
+        "tandas": [
+          {
+            "nombre": "",
+            "turnos": [
+              "20:00",
+              "21:00"
+            ]
+          }
+        ]
+      }
+    ],
+    "extras": [
+      {
+        "id": "parrilla",
+        "label": "Tengo parrilla"
+      },
+      {
+        "id": "horno",
+        "label": "Tengo horno"
+      },
+      {
+        "id": "empanadas",
+        "label": "Sumar empanadas"
+      }
+    ]
+  },
+  "pagos": {
+    "mercadopago": {
+      "endpoint": "https://kit-demos-amf.vercel.app/api/mp-preference",
+      "modo": "sandbox"
+    }
+  },
+  "carta": {
+    "stock": true,
+    "stockAviso": 6,
+    "campos": [
+      {
+        "id": "picor",
+        "label": "Picor (0 a 3 llamas)",
+        "placeholder": "0"
+      },
+      {
+        "id": "apodo",
+        "label": "Apodo en la carta (la estrella, la reina…)"
+      }
+    ],
+    "categorias": [
+      {
+        "id": "vacunas",
+        "nombre": "Vacunas"
+      },
+      {
+        "id": "cerdo-pollo",
+        "nombre": "Cerdo y pollo"
+      },
+      {
+        "id": "veggies",
+        "nombre": "Veggies y clásicas"
+      },
+      {
+        "id": "sandwiches",
+        "nombre": "Sándwiches"
+      }
+    ],
+    "productos": [
+      {
+        "id": "vacio",
+        "categoria": "vacunas",
+        "nombre": "Vacío al malbec",
+        "apodo": "La estrella",
+        "descripcion": "Vacío braseado durante horas en un gran malbec.",
+        "precio": 4500,
+        "foto": "img/platos/vacio.webp",
+        "etiquetas": [
+          "casa"
+        ],
+        "stock": 18,
+        "stockBase": 36
+      },
+      {
+        "id": "cuadril",
+        "categoria": "vacunas",
+        "nombre": "Cuadril al roque",
+        "apodo": "El capitán",
+        "descripcion": "Cuadril tiernizado con queso azul. Una bomba de carne y queso.",
+        "precio": 4500,
+        "foto": "img/platos/cuadril.webp",
+        "stock": 11,
+        "stockBase": 24
+      },
+      {
+        "id": "mollejas",
+        "categoria": "vacunas",
+        "nombre": "Mollejas al verdeo",
+        "apodo": "La reina",
+        "descripcion": "Mollejitas crocantes y tiernas, con verdeo. Un plato de restaurante adentro de una empanada.",
+        "precio": 4500,
+        "foto": "img/platos/mollejas.webp",
+        "stock": 4,
+        "stockBase": 16
+      },
+      {
+        "id": "lomo",
+        "categoria": "vacunas",
+        "nombre": "Lomo ahumado con cheddar",
+        "apodo": "La primera lumbrera",
+        "descripcion": "Lomo ahumado con corazón de cheddar.",
+        "precio": 4500,
+        "foto": "img/platos/lomo.webp",
+        "stock": 9,
+        "stockBase": 20
+      },
+      {
+        "id": "ternera",
+        "categoria": "vacunas",
+        "nombre": "Ternera cocción lenta",
+        "descripcion": "Tres horas de cocción y cheddar fundido.",
+        "precio": 4000,
+        "foto": "img/platos/ternera.webp",
+        "stock": 14,
+        "stockBase": 20
+      },
+      {
+        "id": "bife",
+        "categoria": "vacunas",
+        "nombre": "Bife de chorizo con provoleta",
+        "apodo": "Nunca falla",
+        "descripcion": "Bife de chorizo, provoleta, morrón asado y ajo confitado.",
+        "precio": 4500,
+        "foto": "img/platos/bife.webp",
+        "stock": 12,
+        "stockBase": 20
+      },
+      {
+        "id": "saltena",
+        "categoria": "vacunas",
+        "nombre": "Salteña cortada a cuchillo",
+        "descripcion": "Carne cortada a cuchillo y salteada a fuego fuerte, con buenos condimentos del norte.",
+        "precio": 4000,
+        "foto": "img/platos/saltena.webp",
+        "etiquetas": [
+          "picante"
+        ],
+        "picor": "1",
+        "stock": 0,
+        "stockBase": 24
+      },
+      {
+        "id": "osobuco",
+        "categoria": "vacunas",
+        "nombre": "Osobuco braseado",
+        "descripcion": "Ocho horas de braseado: un corte con mala fama que te va a hacer cambiar de opinión.",
+        "precio": 4000,
+        "foto": "img/platos/osobuco.webp",
+        "stock": 8,
+        "stockBase": 16
+      },
+      {
+        "id": "matambrito",
+        "categoria": "cerdo-pollo",
+        "nombre": "Matambrito de cerdo con jalapeños",
+        "apodo": "La de la casa",
+        "descripcion": "Horneado durante horas hasta que se deshace, con salsa jalapeña. Fuego en la boca.",
+        "precio": 4000,
+        "foto": "img/platos/matambrito.webp",
+        "etiquetas": [
+          "picante"
+        ],
+        "picor": "3",
+        "stock": 10,
+        "stockBase": 24
+      },
+      {
+        "id": "bondiolita",
+        "categoria": "cerdo-pollo",
+        "nombre": "Bondiolita ahumada",
+        "descripcion": "Bondiola ahumada con sus partes crocantes.",
+        "precio": 4000,
+        "stock": 12,
+        "stockBase": 16
+      },
+      {
+        "id": "chori",
+        "categoria": "cerdo-pollo",
+        "nombre": "Chori lumbrero",
+        "descripcion": "Chorizo, papas fritas, huevo frito y cheddar.",
+        "precio": 4000,
+        "foto": "img/platos/chori.webp",
+        "stock": 10,
+        "stockBase": 16
+      },
+      {
+        "id": "pollo-lumbrero",
+        "categoria": "cerdo-pollo",
+        "nombre": "Pollo lumbrero",
+        "descripcion": "Pollo al horno con un suave curry.",
+        "precio": 3500,
+        "foto": "img/platos/pollo-lumbrero.webp",
+        "etiquetas": [
+          "picante"
+        ],
+        "picor": "2",
+        "stock": 15,
+        "stockBase": 20
+      },
+      {
+        "id": "pollo-clasico",
+        "categoria": "cerdo-pollo",
+        "nombre": "Pollo clásico",
+        "apodo": "Receta nueva",
+        "descripcion": "Pollo con verduras salteadas. Éxito total.",
+        "precio": 3500,
+        "foto": "img/platos/pollo-clasico.webp",
+        "etiquetas": [
+          "nuevo"
+        ],
+        "stock": 16,
+        "stockBase": 20
+      },
+      {
+        "id": "provoleta",
+        "categoria": "veggies",
+        "nombre": "Provoleta y aceitunas",
+        "apodo": "Soldado veggie",
+        "descripcion": "Provoleta fundida y aceitunas verdes.",
+        "precio": 3500,
+        "foto": "img/platos/provoleta.webp",
+        "etiquetas": [
+          "veggie"
+        ],
+        "stock": 22,
+        "stockBase": 24
+      },
+      {
+        "id": "ratatouille",
+        "categoria": "veggies",
+        "nombre": "Ratatouille",
+        "descripcion": "Berenjena, zucchini, morrones, cebolla, ajo y un toque especial.",
+        "precio": 3500,
+        "foto": "img/platos/ratatouille.webp",
+        "etiquetas": [
+          "veggie"
+        ],
+        "stock": 12,
+        "stockBase": 16
+      },
+      {
+        "id": "champi",
+        "categoria": "veggies",
+        "nombre": "Champi cheese",
+        "descripcion": "Champiñones y queso.",
+        "precio": 3500,
+        "foto": "img/platos/champi.webp",
+        "etiquetas": [
+          "veggie"
+        ],
+        "stock": 14,
+        "stockBase": 16
+      },
+      {
+        "id": "berenjena",
+        "categoria": "veggies",
+        "nombre": "Berenjena a la parmesana",
+        "descripcion": "Berenjena, salsa de tomate y queso gratinado.",
+        "precio": 3500,
+        "foto": "img/platos/berenjena.webp",
+        "etiquetas": [
+          "veggie"
+        ],
+        "stock": 9,
+        "stockBase": 16
+      },
+      {
+        "id": "cebolla",
+        "categoria": "veggies",
+        "nombre": "Cebolla caramelizada",
+        "descripcion": "Cebolla caramelizada y queso.",
+        "precio": 3500,
+        "etiquetas": [
+          "veggie"
+        ],
+        "stock": 16,
+        "stockBase": 16
+      },
+      {
+        "id": "jyq",
+        "categoria": "veggies",
+        "nombre": "Jamón y queso",
+        "descripcion": "Jamón y queso de excelente calidad. Ese es el único secreto.",
+        "precio": 3500,
+        "foto": "img/platos/jyq.webp",
+        "stock": 20,
+        "stockBase": 24
+      },
+      {
+        "id": "sandwich-asado",
+        "categoria": "sandwiches",
+        "nombre": "Sándwich de asado",
+        "descripcion": "Asado de cocción lenta (4 h), cebolla, salsa de la casa ahumada y papas al horno.",
+        "precio": null,
+        "foto": "img/platos/sandwich.webp",
+        "stock": 10,
+        "stockBase": 12
+      }
+    ]
+  },
+  "textos": {
+    "tuPedido": "Tu caja",
+    "verPedido": "Tu caja",
+    "agregar": "Sumar",
+    "carritoVacio": "La caja está vacía.",
+    "carritoVacioSub": "¿Arrancamos por el vacío al malbec?",
+    "noDisponible": "Se apagó por hoy",
+    "agotadoHoy": "Se apagó por hoy",
+    "ultimasN": "Últimas {n}",
+    "stockMax": "Por hoy quedan {n} y ya están todas en tu caja.",
+    "retiro": "Retiro en la cocina",
+    "delivery": "Envío",
+    "direccion": "Dirección (envío gratis hasta [KM])",
+    "diaEnvio": "¿Cuándo?",
+    "diaRetiro": "¿Cuándo?",
+    "franja": "Franja horaria",
+    "comoPagas": "¿Cómo pagás?",
+    "porWhatsapp": "Enviar por WhatsApp",
+    "porWhatsappSub": "Efectivo o transferencia al recibir",
+    "porMP": "Mercado Pago ahora",
+    "porMPSub": "Tarjeta, débito o dinero en cuenta",
+    "notaPedido": "Algo más (timbre, depto, aclaraciones)",
+    "enviarPedido": "Cerrar la caja",
+    "pagar": "Cerrar la caja y pagar",
+    "pedidoListo": "¡Pedido al fuego!",
+    "pedidoListoSub": "Tu código es {codigo}. Ya lo ven en la cocina y te confirman por WhatsApp.",
+    "pedidoPagado": "¡Pago aprobado, pedido al fuego!",
+    "pedidoPagadoSub": "Pedido {codigo} pagado. Ya está en la cocina.",
+    "waPedido": "Hola Lumbre! Quiero hacer este pedido:",
+    "waPagoWA": "efectivo o transferencia al recibir",
+    "seguir": "Seguir mirando",
+    "reservas": "Eventos",
+    "reservarMesa": "Evento privado",
+    "personas": "Invitados",
+    "persona": "invitado",
+    "personasN": "invitados",
+    "confirmarReserva": "Pedir presupuesto",
+    "reservaLista": "¡Consulta enviada!",
+    "sinReservas": "Todavía no entró ninguna consulta de evento.",
+    "comentario": "Contanos del evento (lugar, tipo de festejo…)",
+    "anotarReserva": "Anotar evento",
+    "waReserva": "Hola {negocio}! Quiero un presupuesto para un evento de {personas} el {dia} ({hora}). Soy {nombre}.",
+    "waConfirmaReserva": "Hola {nombre}! Te escribimos de {negocio} por tu evento de {personas} el {dia}. Te pasamos el presupuesto:"
+  },
+  "cartaQR": {
+    "pedir": true,
+    "textos": {
+      "titulo": "La carta de esta noche"
+    }
+  }
+}
