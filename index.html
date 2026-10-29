@@ -29,7 +29,7 @@
 <link rel="preload" as="image" href="img/hero-celu.webp" media="(max-width: 899px)">
 <link rel="preload" as="image" imagesrcset="img/hero-desk.webp 840w, img/hero-desk-s.webp 560w" imagesizes="(min-width: 1200px) 560px, 44vw" media="(min-width: 900px)">
 <link rel="stylesheet" href="kit/kit.css?v=1">
-<link rel="stylesheet" href="css/style.css?v=1">
+<link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
 
@@ -152,17 +152,18 @@
 
   <!-- WOW: ARMÁ TU CAJA -->
   <section class="sec caja" id="caja">
-    <div class="wrap caja__grid">
+    <div class="wrap">
+      <header class="caja__head sec__head">
+        <p class="kicker" data-rev>Armá tu caja</p>
+        <h2 class="sec__t" data-rev><span>La docena se llena sola</span></h2>
+        <p class="sec__p" data-rev>Elegí cuántas querés de cada gusto con el − y el +. Si no te decidís, completala con una surtida de la casa. Cuando está llena, se cierra y pasás a pagar.</p>
+        <div class="seg" role="group" aria-label="Tamaño de la caja" data-rev>
+          <button type="button" class="seg__b is-on" data-cap="12" aria-pressed="true">Docena</button>
+          <button type="button" class="seg__b" data-cap="6" aria-pressed="false">Media docena</button>
+        </div>
+      </header>
+    <div class="caja__grid">
       <div class="caja__izq">
-        <header class="caja__head">
-          <p class="kicker" data-rev>Armá tu caja</p>
-          <h2 class="sec__t" data-rev><span>La docena se llena sola</span></h2>
-          <p class="sec__p" data-rev><span class="solo-touch">Tocá un gusto y vuela a la caja.</span><span class="solo-mouse">Hacé clic en un gusto o arrastralo adentro de la caja.</span> Con la caja completa, se cierra y pasás a pagar.</p>
-          <div class="seg" role="group" aria-label="Tamaño de la caja" data-rev>
-            <button type="button" class="seg__b is-on" data-cap="12" aria-pressed="true">Docena</button>
-            <button type="button" class="seg__b" data-cap="6" aria-pressed="false">Media docena</button>
-          </div>
-        </header>
         <div class="caja__box" data-caja data-rev>
           <div class="caja__tapa" aria-hidden="true"><img src="img/logo-lumbre.svg" width="800" height="495" alt=""></div>
           <div class="caja__fondo">
@@ -174,7 +175,7 @@
             </div>
           </div>
           <div class="caja__pie">
-            <p class="caja__cuenta" aria-live="polite"><b data-caja-cuenta>0 de 12</b><span data-caja-extra></span></p>
+            <p class="caja__cuenta" aria-live="polite"><b data-caja-cuenta>0 de 12</b><span data-caja-extra>Elegí tus gustos</span></p>
             <div class="caja__acc">
               <button type="button" class="btn btn--linea btn--chico" data-vaciar hidden>Vaciar</button>
               <button type="button" class="btn btn--oro btn--chico" data-kit-open="carrito" data-cerrar-caja disabled>Cerrar la caja</button>
@@ -183,9 +184,21 @@
         </div>
       </div>
       <div class="caja__der">
-        <div class="caja__filtros" role="tablist" aria-label="Gustos" data-filtros data-rev></div>
-        <ul class="bandeja" data-bandeja aria-label="Gustos para sumar a la caja"></ul>
+        <!-- en el celu: la caja en una tira que acompaña mientras elegís -->
+        <div class="tira" data-tira aria-live="polite">
+          <div class="tira__top">
+            <p class="tira__t"><b data-tira-cuenta>0 de 12</b><span data-tira-extra>Elegí tus gustos</span></p>
+            <button type="button" class="btn btn--oro btn--chico" data-kit-open="carrito" data-cerrar-caja disabled>Cerrar la caja</button>
+          </div>
+          <ol class="tira__huecos" data-tira-huecos aria-hidden="true"></ol>
+        </div>
+        <div class="caja__tools" data-rev>
+          <div class="caja__filtros" role="tablist" aria-label="Gustos" data-filtros></div>
+          <button type="button" class="completar" data-completar><svg aria-hidden="true"><use href="#llamita"/></svg><span data-completar-t>Completar con surtidas de la casa</span></button>
+        </div>
+        <ul class="gustos" data-bandeja aria-label="Gustos para sumar a la caja"></ul>
       </div>
+    </div>
     </div>
   </section>
 
@@ -216,6 +229,10 @@
           <li class="paso">
             <figure class="paso__foto"><img src="img/galeria/p004.webp" width="800" height="800" alt="Una empanada cruda sobre la balanza marca 120 gramos" loading="lazy" decoding="async"></figure>
             <div class="paso__txt"><span class="paso__n">04</span><h3>120 gramos de masa casera</h3><p>Poca cebolla, mucha carne, queso y relleno. En una docena tenés doce platos de comida.</p></div>
+          </li>
+          <li class="paso paso--final">
+            <figure class="paso__foto"><img src="img/galeria/105.webp" width="900" height="900" alt="Empanada de vacío al malbec recién horneada, abierta al medio" loading="lazy" decoding="async"></figure>
+            <div class="paso__txt"><span class="paso__n">05</span><h3>Al horno, y a tu mesa</h3><p>Sale dorada, crocante y desbordando relleno. Llega caliente en la franja que elegiste.</p><a class="paso__cta" href="#caja">Armá tu docena →</a></div>
           </li>
         </ol>
       </div>
@@ -374,6 +391,6 @@
   <span class="barra-caja__ver">Ver pedido →</span>
 </button>
 
-<script type="module" src="js/main.js?v=1"></script>
+<script type="module" src="js/main.js?v=2"></script>
 </body>
 </html>
