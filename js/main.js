@@ -209,6 +209,7 @@ function carta(kit) {
     $$('.kit-item', cont).forEach((it) => { const p = prods.find((x) => x.id === it.dataset.id); it.dataset.picor = String(Number(p?.picor) || 0); });
     revisarPicor(); primeraFoto();
     pintarHornoCard(kit, prods);
+    if (cont.dataset.pintada) cont.classList.add('is-quieta'); cont.dataset.pintada = '1';
   });
   cont.addEventListener('click', (e) => {
     const ir = e.target.closest('[data-ir-cat]'); if (ir && ir.dataset.irCat) { irA(ir.dataset.irCat); return; }
@@ -247,37 +248,75 @@ function caja(kit) {
   const box = $('[data-caja]'), huecos = $('[data-huecos]'), bandeja = $('[data-bandeja]'), filtros = $('[data-filtros]');
   const tira = $('[data-tira]'), tiraHuecos = $('[data-tira-huecos]');
   const btnVaciar = $('[data-vaciar]'), btnCompletar = $('[data-completar]');
-  let cap = 12, prods = [], cats = [], filtro = 'todas', llegando = 0, estabaLlena = false;
+  let cap = 12, prods = [], cats = [], filtro = 'todas', llegando = 0, estabaLlena = false, firmaBandeja = '';
+  const orden = [];
   box.dataset.cap = cap; tira.dataset.cap = cap;
 
   const lineas = () => kit.carrito.lineas.filter((l) => !l.gc);
   const cantDe = (id) => lineas().filter((l) => l.id === id).reduce((s, l) => s + l.cant, 0);
-  const enCaja = () => lineas().flatMap((l) => CAT_EMPANADAS(prods.find((p) => p.id === l.id)) ? Array(l.cant).fill(l.id) : []);
   const tope = (p) => { const q = kit.stockDe(p); return q != null && cantDe(p.id) >= q; };
   const foto = (p) => p?.foto ? kit.asset(thumb(p.foto)) : '';
 
-  function slots(items, conBoton) {
-    const n = items.length;
-    // la caja que se está llenando: con 14 empanadas y docena, se ven las 2 de la segunda caja
-    const base = n > cap ? Math.floor((n - 1) / cap) * cap : 0;
-    return Array.from({ length: cap }, (_, i) => {
-      const id = items[base + i]; const p = prods.find((x) => x.id === id);
-      if (!p) return '<li class="hueco"></li>';
-      const tarde = llegando && base + i === n - 1 && Date.now() - llegando < 250 ? ' style="animation-delay:.4s"' : '';
-      const img = foto(p) ? `<img src="${esc(foto(p))}" width="240" height="240" alt="">` : LLAMA;
-      return conBoton ? `<li class="hueco"><button type="button" data-sacar="${esc(id)}" aria-label="Sacar una de ${esc(p.nombre)}"${tarde}>${img}</button></li>`
-        : `<li class="hueco is-lleno"><span${tarde}>${img}</span></li>`;
-    }).join('');
+  // la caja es física: cada empanada queda en el hueco donde cayó. Sacar una deja el hueco libre
+  // y la próxima lo ocupa; nada se corre ni se reordena por gusto.
+  let pos = [], ultima = 0;
+  const llenas = () => pos.filter(Boolean);
+  const enCaja = () => llenas();
+  function sincronizar() {
+    const quiero = {};
+    lineas().forEach((l) => { if (CAT_EMPANADAS(prods.find((p) => p.id === l.id))) quiero[l.id] = (quiero[l.id] || 0) + l.cant; });
+    const tengo = {}; pos.forEach((id) => { if (id) tengo[id] = (tengo[id] || 0) + 1; });
+    Object.keys(tengo).forEach((id) => {                         // sobran: saco las últimas de ese gusto
+      let sobran = tengo[id] - (quiero[id] || 0);
+      for (let i = pos.length - 1; i >= 0 && sobran > 0; i--) if (pos[i] === id) { pos[i] = null; sobran--; ultima = i; }
+    });
+    Object.keys(quiero).forEach((id) => {                        // faltan: van al primer hueco libre
+      for (let k = (quiero[id] || 0) - (tengo[id] || 0); k > 0; k--) {
+        const libre = pos.indexOf(null); const i = libre === -1 ? pos.length : libre;
+        pos[i] = id; ultima = i;
+      }
+    });
+    while (pos.length && !pos[pos.length - 1]) pos.pop();
+    if (!pos.length) ultima = 0;
+  }
+  const proximo = () => { const l = pos.indexOf(null); return l === -1 ? pos.length : l; };
+  const cajaVisible = () => Math.floor(Math.min(ultima, Math.max(pos.length - 1, 0)) / cap);
+
+  function slotHTML(id, i, conBoton, tarde) {
+    const p = prods.find((x) => x.id === id);
+    if (!p) return '<li class="hueco"></li>';
+    const d = tarde ? ' style="animation-delay:.4s"' : '';
+    const img = foto(p) ? `<img src="${esc(foto(p))}" width="240" height="240" alt="">` : LLAMA;
+    return conBoton ? `<li class="hueco"><button type="button" data-sacar="${esc(id)}" data-pos="${i}" aria-label="Sacar una de ${esc(p.nombre)}"${d}>${img}</button></li>`
+      : `<li class="hueco is-lleno"><span${d}>${img}</span></li>`;
+  }
+  // solo se repinta el hueco que cambió: el resto queda quieto (sin volver a animar)
+  function slots(ul, conBoton) {
+    const base = cajaVisible() * cap;
+    const ids = Array.from({ length: cap }, (_, i) => pos[base + i] || '');
+    const prev = ul._ids || [];
+    const rehacer = ul.children.length !== cap;
+    if (rehacer) ul.innerHTML = Array.from({ length: cap }, () => '<li class="hueco"></li>').join('');
+    ids.forEach((id, i) => {
+      if (!rehacer && prev[i] === id && ul._base === base) return;
+      if (!rehacer && prev[i] === id && ul._base !== base && !id) return;
+      const tarde = llegando && base + i === ultima && Date.now() - llegando < 250;
+      ul.children[i].outerHTML = slotHTML(id, base + i, conBoton, tarde);
+      if (ul.classList.contains('llueve') && ul.children[i].firstElementChild) ul.children[i].firstElementChild.style.animationDelay = `${i * 40}ms`;
+    });
+    ul._ids = ids; ul._base = base;
   }
   function pintarCaja() {
-    const items = enCaja(); const n = items.length;
-    const enEsta = n === 0 ? 0 : ((n - 1) % cap) + 1;      // cuántas hay en la caja que se ve
-    const cajas = Math.ceil(n / cap);
-    const llena = n > 0 && n % cap === 0;
-    huecos.innerHTML = slots(items, true);
-    tiraHuecos.innerHTML = slots(items, false);
+    sincronizar();
+    const n = llenas().length;
+    const cajas = Math.max(1, Math.ceil(pos.length / cap));
+    const base = cajaVisible() * cap;
+    const enEsta = pos.slice(base, base + cap).filter(Boolean).length;
+    const llena = n > 0 && n % cap === 0 && pos.length === n;
+    slots(huecos, true); slots(tiraHuecos, false);
     const cuenta = `${enEsta} de ${cap}`;
-    const extra = n === 0 ? 'Elegí tus gustos' : llena ? (cajas > 1 ? `¡${cajas} cajas completas!` : '¡Caja completa!') : `${cajas > 1 ? `Caja ${cajas} · ` : ''}faltan ${cap - enEsta}`;
+    const nCaja = cajaVisible() + 1;
+    const extra = n === 0 ? 'Elegí tus gustos' : llena ? (cajas > 1 ? `¡${cajas} cajas completas!` : '¡Caja completa!') : `${cajas > 1 ? `Caja ${nCaja} · ` : ''}faltan ${cap - enEsta}`;
     $('[data-caja-cuenta]').textContent = cuenta; $('[data-caja-extra]').textContent = extra;
     $('[data-tira-cuenta]').textContent = cuenta; $('[data-tira-extra]').textContent = extra;
     box.classList.toggle('is-llena', llena); tira.classList.toggle('is-llena', llena);
@@ -286,7 +325,8 @@ function caja(kit) {
     $('[data-caja-lista]').textContent = `${cap === 12 ? 'Docena' : 'Media docena'} lista para el fuego`;
     $$('[data-cerrar-caja]').forEach((b) => { b.disabled = lineas().length === 0; b.textContent = llena ? 'Cerrar la caja y pagar' : 'Cerrar la caja'; b.classList.toggle('is-late', llena); });
     btnVaciar.hidden = n === 0;
-    $('[data-completar-t]').textContent = n === 0 ? `Armame una ${cap === 12 ? 'docena' : 'media'} surtida` : llena ? `Sumar otra ${cap === 12 ? 'docena' : 'media'} surtida` : `Completar con ${cap - enEsta} surtidas de la casa`;
+    const faltan = n === 0 || llena ? cap : cap - (n % cap || cap);
+    $('[data-completar-t]').textContent = n === 0 ? `Armame una ${cap === 12 ? 'docena' : 'media'} surtida` : llena ? `Sumar otra ${cap === 12 ? 'docena' : 'media'} surtida` : `Completar con ${faltan} surtidas de la casa`;
     pintarGustos();
   }
   function pintarGustos() {
@@ -325,8 +365,8 @@ function caja(kit) {
   function volar(desdeEl, p) {
     if (reducido || !p.foto || !desdeEl) return;
     const destino = esDesk() ? huecos : tiraHuecos;
-    const n = enCaja().length; const idx = n % cap;
-    const h = destino.children[idx]; if (!h) return;
+    const idx = proximo() - cajaVisible() * cap;
+    const h = destino.children[idx >= 0 && idx < cap ? idx : proximo() % cap]; if (!h) return;
     const a = desdeEl.getBoundingClientRect(), b = h.getBoundingClientRect();
     if (!a.width || !b.width || b.bottom < 0 || b.top > innerHeight) return;
     const v = document.createElement('span'); v.className = 'ficha-vuelo';
@@ -346,6 +386,7 @@ function caja(kit) {
   function completar() {
     const n = enCaja().length;
     const faltan = n === 0 || n % cap === 0 ? cap : cap - (n % cap);
+    huecos.classList.add('llueve'); tiraHuecos.classList.add('llueve');
     // primero las de la casa (las que tienen apodo), después las que más stock tienen; de a una por gusto, en ronda
     const lista = prods.filter((p) => CAT_EMPANADAS(p) && kit.pedible(p) && (filtro === 'todas' || p.categoria === filtro))
       .sort((a, b) => (b.apodo ? 1 : 0) - (a.apodo ? 1 : 0) || (kit.stockDe(b) ?? 99) - (kit.stockDe(a) ?? 99));
@@ -355,9 +396,7 @@ function caja(kit) {
       for (const p of lista) { if (puestas >= faltan) break; if (tope(p)) continue; kit.carrito.agregar(p.id, 1); puestas++; alguna = true; }
       if (!alguna) break; vuelta++;
     }
-    if (!puestas) return;
-    huecos.classList.remove('llueve'); tiraHuecos.classList.remove('llueve'); void huecos.offsetWidth;
-    huecos.classList.add('llueve'); tiraHuecos.classList.add('llueve');
+    huecos.classList.remove('llueve'); tiraHuecos.classList.remove('llueve');
   }
 
   bandeja.addEventListener('click', (e) => {
@@ -365,12 +404,12 @@ function caja(kit) {
     if (e.target.closest('[data-mas], [data-mas-foto]')) { sumar(li.dataset.id, $('.gusto__img', li)); return; }
     if (e.target.closest('[data-menos]')) kit.carrito.agregar(li.dataset.id, -1);
   });
-  const sacar = (e) => { const b = e.target.closest('[data-sacar]'); if (b) kit.carrito.agregar(b.dataset.sacar, -1); };
+  const sacar = (e) => { const b = e.target.closest('[data-sacar]'); if (!b) return; const i = Number(b.dataset.pos); if (pos[i] === b.dataset.sacar) { pos[i] = null; ultima = i; } kit.carrito.agregar(b.dataset.sacar, -1); };
   huecos.addEventListener('click', sacar);
-  filtros.addEventListener('click', (e) => { const b = e.target.closest('[data-filtro]'); if (!b) return; filtro = b.dataset.filtro; pintarFiltros(); pintarBandeja(); });
+  filtros.addEventListener('click', (e) => { const b = e.target.closest('[data-filtro]'); if (!b) return; filtro = b.dataset.filtro; bandeja.classList.remove('is-quieta'); firmaBandeja = ''; pintarFiltros(); pintarBandeja(); firmaBandeja = prods.filter((p) => CAT_EMPANADAS(p) && (filtro === 'todas' || p.categoria === filtro)).map((p) => p.id + (kit.pedible(p) ? '' : '-off')).join(); });
   btnCompletar.addEventListener('click', completar);
   $$('[data-cap]').forEach((b) => b.addEventListener('click', () => {
-    cap = Number(b.dataset.cap); box.dataset.cap = cap; tira.dataset.cap = cap; estabaLlena = enCaja().length > 0 && enCaja().length % cap === 0;
+    cap = Number(b.dataset.cap); box.dataset.cap = cap; tira.dataset.cap = cap; pos = llenas(); ultima = Math.max(pos.length - 1, 0); estabaLlena = enCaja().length > 0 && enCaja().length % cap === 0;
     $$('[data-cap]').forEach((x) => { const on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', on); });
     pintarCaja(); pintarBarra(kit, cap);
   }));
@@ -381,8 +420,15 @@ function caja(kit) {
 
   document.addEventListener('kit:carta', (e) => {
     if (e.detail.el.id !== 'carta-kit') return;
-    prods = e.detail.productos; cats = e.detail.visibles;
-    pintarFiltros(); pintarBandeja(); pintarCaja();
+    // orden fijo: el de la primera carga. Si la carta se recarga (stock, otra pestaña), no se reordena ni se vuelve a animar
+    const nuevos = e.detail.productos;
+    nuevos.forEach((p) => { if (!orden.includes(p.id)) orden.push(p.id); });
+    prods = [...nuevos].sort((a, b) => orden.indexOf(a.id) - orden.indexOf(b.id)); cats = e.detail.visibles;
+    const ids = (l) => l.filter((p) => CAT_EMPANADAS(p) && (filtro === 'todas' || p.categoria === filtro)).map((p) => p.id + (kit.pedible(p) ? '' : '-off')).join();
+    const firma = ids(prods);
+    if (bandeja.children.length && firma === firmaBandeja) { pintarCaja(); return; }
+    if (bandeja.children.length) bandeja.classList.add('is-quieta');
+    firmaBandeja = firma; pintarFiltros(); pintarBandeja(); pintarCaja();
   });
   document.addEventListener('kit:carrito', () => { pintarCaja(); pintarBarra(kit, cap); });
   return { get cap() { return cap; } };

@@ -344,8 +344,6 @@ html:not(.js) [data-rev], html:not(.js) .sec__t[data-rev] > span { opacity: 1; t
 .hueco > button::after { content: "−"; position: absolute; inset: 0; display: grid; place-items: center; background: rgba(14, 4, 3, .55); color: var(--masa); font: 800 22px/1 var(--f-txt); opacity: 0; transition: opacity .2s; }
 @media (hover: hover) { .hueco > button:hover::after { opacity: 1; } }
 @keyframes cae { 0% { transform: scale(.4) translateY(-14px); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: none; } }
-.llueve .hueco > * { animation: cae .45s var(--ease) both; }
-.llueve .hueco:nth-child(n) > * { animation-delay: calc(var(--k, 0) * 40ms); }
 .caja__box.is-llena .caja__tapa { transform: rotateX(0deg) translateY(0); opacity: 1; }
 .caja__cierre { position: absolute; inset: 0; z-index: 3; border-radius: 6px 6px 16px 16px; background: linear-gradient(180deg, #C99A63, #B07E48); box-shadow: inset 0 0 0 2px rgba(120, 70, 30, .35);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 20px; text-align: center;
@@ -611,3 +609,24 @@ html.menu-abierto .kit-demo-pill { opacity: 0; pointer-events: none; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   [data-rev], .sec__t[data-rev] > span { opacity: 1 !important; transform: none !important; }
 }
+
+/* ===== ajustes mobile (revisión 100% celu) ===== */
+.menu__panel { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; min-height: 44px; font: 600 15px/1 var(--f-txt); color: var(--llama); text-decoration: none; }
+.menu__punto { width: 8px; height: 8px; border-radius: 50%; background: #3BD16F; box-shadow: 0 0 8px #3BD16F; }
+@media (min-width: 900px) { .menu__panel { display: none; } }
+@media (max-width: 899px) {
+  .kit-demo-pill { display: none !important; }
+  /* fila de compra siempre igual: stock arriba, precio a la izquierda y Sumar a la derecha */
+  .it__der { flex-wrap: wrap; }
+  .it__der .it__stock--m { flex: 1 0 100%; margin: 0; }
+  .it__der .it__stock--m + .it__precio, .it__der .it__precio { margin-left: 0; margin-right: auto; }
+  .it__der .it__qty { margin-left: auto; }
+}
+
+/* la lista de la caja no "respira" al sumar o sacar: solo anima al aparecer o al cambiar de filtro */
+.gustos.is-quieta .gusto { animation: none; }
+.gusto { transition: border-color .2s, background-color .2s; }
+.gusto__paso output { min-width: 30px; }
+.is-quieta .kit-item { animation: none !important; }
+/* nada "salta" al sumar o sacar: sin rebote en los − n + ni en las líneas de la caja */
+.kit-step, .kit-line { animation: none !important; }
